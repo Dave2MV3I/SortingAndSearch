@@ -14,9 +14,11 @@ public class Visualiser extends GraphicalObject{
     private boolean pause;
     private ArrayList<SortingStep> history;
     private int historyIndex;
+    double swappingTimer = 0;
+    boolean swapping = false;
 
-    private double swapX1;
-    private double swapX2;
+    private double newXForA;
+    private double newXForB;
 
     @Override
     public void draw(DrawTool drawTool){
@@ -37,8 +39,8 @@ public class Visualiser extends GraphicalObject{
         this.algorithm = algorithm;
     }
 
-    public void prepareAnimation(ArrayList<SortingStep> history, Element[] originalArray){
-        this.animElements = originalArray;
+    public void prepareAnimation(ArrayList<SortingStep> history, Element[] originalElements){
+        this.animElements = originalElements;
         this.history = history;
         prepareElements();
         historyIndex = 0;
@@ -59,7 +61,9 @@ public class Visualiser extends GraphicalObject{
 
     @Override
     public void update(double dt){
-
+        if (swapping){
+            swappingTimer += dt;
+        }
     }
 
     public void animateStep(boolean forward){
@@ -71,8 +75,11 @@ public class Visualiser extends GraphicalObject{
             case Swap s -> {
                 int indexA = ((Swap)step).a();
                 int indexB = ((Swap)step).b();
+                newXForA = 50+ indexB*animElements[indexB].getWidth();
+                newXForB = 50+ indexA*animElements[indexA].getWidth();
                 int ms = 1000;
-                int timer = 0;
+                swapping = true;
+                //swappingTimer = 0;
             }
 
             case Marking m -> {

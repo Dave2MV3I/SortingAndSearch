@@ -68,13 +68,15 @@ public class ProgramController {
             }
             visualiser.prepareAnimation(history, animElements);
             visualiser.setAlgorithm(algType.toString());
+
+            for (SortingStep step : history){
+                if (step instanceof Swap){
+                    System.out.println("Swap");
+                } else if (step instanceof Marking) System.out.println("Marking");
+            }
         }
 
-        /*for (Sorter.SortingStep step : sorter.getHistory()){
-            if (step instanceof Sorter.Swap){
-                System.out.println("Swap");
-            } else if (step instanceof Sorter.Marking) System.out.println("Marking");
-        }*/
+
     }
 
     private void shuffleIntegers(){
