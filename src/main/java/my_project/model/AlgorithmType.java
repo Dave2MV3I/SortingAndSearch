@@ -1,0 +1,7 @@
+package my_project.model;
+
+public enum AlgorithmType {
+    INSERTION,SELECTION,BUBBLE,QUICK,
+    INSERTION2,SELECTION2,BUBBLE2,QUICK2,
+    LINEARSEARCH,BINARYSEARCH
+}
