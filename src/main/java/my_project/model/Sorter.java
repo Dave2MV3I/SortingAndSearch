@@ -35,11 +35,24 @@ public enum Sorter {
             int index;
             for(int i = 0; i < array.length-1; i++) {
                 index = i;
-                for (int j = i + 1; j < array.length; j++) {
-                    if (array[index] > array[j]) index = j;
+                history.add(new Marking(index, MarkingType.COMPARISON));
+                for (int j = index + 1; j < array.length; j++) {
+                    history.add(new Marking(j, MarkingType.COMPARISON));
+                    if (array[index] > array[j]){
+                        history.add(new Marking(index, MarkingType.DEMARK));
+                        history.add(new Marking(j, MarkingType.DEMARK));
+                        history.add(new Marking(j, MarkingType.COMPARISON));
+                        index = j;
+                    }
+                    else {
+                        history.add(new Marking(j, MarkingType.DEMARK));
+                    }
                 }
-                swap(i, index, array);
+                history.add(new Marking(index, MarkingType.DEMARK));
+                swap(i, index, array, history);
+                history.add(new Marking(i, MarkingType.SORTED));
             }
+            history.add(new Marking(array.length-1, MarkingType.SORTED));
 
             return history;
         }
@@ -55,7 +68,7 @@ public enum Sorter {
                 sorted = true;
                 for (int i = 0; i < array.length - 1; i++){
                     if (array[i] > array[i+1]){
-                        swap(i, i+1, array);
+                        swap(i, i+1, array, history);
                         sorted = false;
                     }
                 }
@@ -88,10 +101,12 @@ public enum Sorter {
                         r--;
                     }
                     if (l <= r) {
-                        swap(l, r, array);
+                        swap(l, r, array, history);
+                        l++;
+                        r--;
                     }
                 }
-                swap(rechts, l, array);
+                swap(rechts, l, array, history);
                 //array[l] ist sortiert
                 quicksort(links, l-1);
                 quicksort(l+1, rechts);
@@ -142,7 +157,7 @@ public enum Sorter {
                 for (int j = i+1; j < array.length; j++){
                     if (array[j] < array[min]) min = j;
                 }
-                swap(i, min, array);
+                swap(i, min, array, history);
             }
 
             return history;
@@ -157,7 +172,7 @@ public enum Sorter {
             // -> Ansatz mit while als äußere Schleife ist besser als mit for, weil der Array auch in weniger Schritten sortiert werden könnte
             for (int i = 0; i < array.length; i++){
                 for (int j = 0; j < array.length-1; j++){
-                    if (array[j] > array[j+1]) swap(j, j+1, array);
+                    if (array[j] > array[j+1]) swap(j, j+1, array, history);
                 }
             }
 
@@ -185,11 +200,11 @@ public enum Sorter {
             int lastReplaceable = min;
             for (int i = min; i < max; i++){
                 if (array[i] <= array[pivot]){
-                    if (lastReplaceable != i) swap(lastReplaceable, i, array);
+                    if (lastReplaceable != i) swap(lastReplaceable, i, array, history);
                     lastReplaceable++;
                 }
             }
-            swap(lastReplaceable,pivot, array);
+            swap(lastReplaceable,pivot, array, history);
 
             // Recursion
             quicksort(min, lastReplaceable-1);
@@ -215,9 +230,14 @@ public enum Sorter {
 
     public abstract ArrayList<SortingStep> sort(int[] array);
 
-    private static void swap(int index1, int index2, int[] array) {
+    private static void swap(int index1, int index2, int[] array, ArrayList<SortingStep> history) {
         int temp = array[index1];
         array[index1] = array[index2];
         array[index2] = temp;
+        history.add(new Swap(index1, index2));
+    }
+
+    private static boolean compare(int index1, int index2, int[] array) {
+        return array[index1] > array[index2];
     }
 }

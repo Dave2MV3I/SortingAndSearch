@@ -23,6 +23,10 @@ public class Menu {
     private JButton binarySearchButton;
     private JButton quick3Button;
 
+    private JLabel swaps;
+    private JLabel comps;
+    private int compsHelp = 0;
+
     public Menu(ProgramController pc) {
         JButton[] buttons = {quickButton, selectionButton, bubbleButton, insertionButton,
                 quick2Button, selection2Button, bubble2Button, insertion2Button, quick3Button,
@@ -37,5 +41,21 @@ public class Menu {
     }
 
     public JPanel getMainPane() {return  mainPane;}
+
+    public void setCounter(String typ){
+        switch(typ){
+            case "swap":
+                swaps.setText(Integer.toString(Integer.parseInt(swaps.getText())+1));break;
+            case "comp" :
+                compsHelp++;
+                if(compsHelp%2==0) comps.setText(Integer.toString(Integer.parseInt(comps.getText())+1));
+                break;
+
+            case "unswap" :
+                swaps.setText(Integer.toString(Integer.parseInt(swaps.getText())-1));break;
+            case "uncomp" :
+                comps.setText(Integer.toString(Integer.parseInt(comps.getText())-1)); break;
+        }
+    }
 
 }

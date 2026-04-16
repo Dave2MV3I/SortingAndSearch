@@ -2,6 +2,7 @@ package my_project.model;
 import KAGO_framework.model.GraphicalObject;
 import KAGO_framework.view.DrawTool;
 import my_project.Config;
+import my_project.control.ProgramController;
 
 import java.awt.*;
 import java.util.ArrayList;
@@ -16,6 +17,11 @@ public class Visualiser extends GraphicalObject{
     boolean animating = false;
     final double timerDuration = 0.3;
     double timer = timerDuration;
+    private ProgramController pc;
+
+    public Visualiser(ProgramController pc){
+        this.pc = pc;
+    }
 
     /*double swappingTimer = 0;
     boolean swapping = false;
@@ -81,9 +87,8 @@ public class Visualiser extends GraphicalObject{
 
     public void animateStep(boolean forward){
         SortingStep step = history.get(historyIndex);
-        if (forward) historyIndex++;
-        else historyIndex--;
-
+        if (forward && historyIndex < history.size()-1) historyIndex++;
+        else if (!forward) historyIndex--;
         switch (step){
             case Swap s -> {
                 int indexA = ((Swap)step).indexA();
@@ -95,6 +100,11 @@ public class Visualiser extends GraphicalObject{
                 //swappingTimer = 0;
                 animElements[indexA].setX(newXForA);
                 animElements[indexB].setX(newXForB);
+                Element temp = animElements[indexA];
+                animElements[indexA] = animElements[indexB];
+                animElements[indexB] = temp;
+                if (forward) pc.counter("swap");
+                else pc.counter("unswap");
             }
 
             case Marking m -> {
@@ -102,6 +112,8 @@ public class Visualiser extends GraphicalObject{
                 MarkingType mt = ((Marking)step).markingType();
                 Element e = animElements[indexA];
                 e.setMarking(mt);
+                if (forward){ if(mt == COMPARISON) pc.counter("comp");}
+                else pc.counter("uncomp");
             }
         }
     }

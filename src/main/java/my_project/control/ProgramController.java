@@ -38,7 +38,7 @@ public class ProgramController {
         frame.pack();
         frame.setVisible(true);
 
-        visualiser = new Visualiser();
+        visualiser = new Visualiser(this);
         viewController.draw(visualiser);
         randomIntegers();
         visualiser.createElements(array);
@@ -80,5 +80,9 @@ public class ProgramController {
     private void randomIntegers(){
         for (int i = 0; i < array.length; i++)
             array[i] = (int)(3+Math.random()*(range-3));
+    }
+
+    public void counter(String typ){
+        menu.setCounter(typ);
     }
 }
