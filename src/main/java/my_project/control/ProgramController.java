@@ -23,6 +23,7 @@ public class ProgramController {
     private Visualiser visualiser;
     private JFrame frame;
     private Menu menu;
+    private Sorter sorter;
 
     // Datenstrukturen
     private int[] array = new int[n];
@@ -59,9 +60,11 @@ public class ProgramController {
         }
         else {
             int[] originalArray = Arrays.copyOf(array, array.length);
-            Sorter sorter = Sorter.valueOf(algType.name().toUpperCase());
+            sorter = Sorter.valueOf(algType.name().toUpperCase());
             ArrayList<SortingStep> history = sorter.sort(array);
             for (int i : array) System.out.print(i+ " ,");
+            counter();
+
             visualiser.setHistory(history);
             visualiser.setAlgorithm(algType.toString());
             // TEST visualiser.createElements(array);
@@ -81,7 +84,7 @@ public class ProgramController {
             array[i] = (int)(3+Math.random()*(range-3));
     }
 
-    public void counter(String typ){
-        menu.setCounter(typ);
+    public void counter(){
+        menu.setCounter(sorter.getSwaps(), sorter.getComps());
     }
 }

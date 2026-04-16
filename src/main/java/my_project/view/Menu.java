@@ -42,20 +42,9 @@ public class Menu {
 
     public JPanel getMainPane() {return  mainPane;}
 
-    public void setCounter(String typ){
-        switch(typ){
-            case "swap":
-                swaps.setText(Integer.toString(Integer.parseInt(swaps.getText())+1));break;
-            case "comp" :
-                compsHelp++;
-                if(compsHelp%2==0) comps.setText(Integer.toString(Integer.parseInt(comps.getText())+1));
-                break;
-
-            case "unswap" :
-                swaps.setText(Integer.toString(Integer.parseInt(swaps.getText())-1));break;
-            case "uncomp" :
-                comps.setText(Integer.toString(Integer.parseInt(comps.getText())-1)); break;
-        }
+    public void setCounter(int s, int c){
+        swaps.setText("Swaps: " + s);
+        comps.setText("Comparisons: " + c);
     }
 
 }

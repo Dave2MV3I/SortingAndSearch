@@ -1,5 +1,4 @@
-/*
-package my_project.model;
+/*package my_project.model;
 
 import java.util.ArrayList;
 
@@ -16,13 +15,14 @@ public enum Sorter {
                 //history.add(new Marking(i, MarkingType.PERMANENT));
                 addMark(i, PERMANENT, history);
                 int j = i-1;
-                while (j >= 0 && array[j] > key) {
+                while (j >= 0 && compare(array[j], key)) {
                     //history.add(new Marking(j, MarkingType.COMPARISON));
                     addMark(j, COMPARISON, history);
                     array[j+1] = array[j];
                     //history.add(new Swap(j, j+1)); // Nur zum Visualisieren, in Wirklichkeit wird key gemerkt und die anderen kopiert, letztes mit key ersetzt
                     //history.add(new Marking(j, MarkingType.DEMARK));
                     addSwap(j, j+1, history);
+                    swap(0,0, array, history); //Nur für den Counter
                     addMark(j, DEMARK, history);
                     j--;
                 }
@@ -30,7 +30,6 @@ public enum Sorter {
                 //history.add(new Marking(j+1, MarkingType.DEMARK_PERMANENT));
                 addMark(j+1, DEMARK_PERMANENT, history);
             }
-            for (int i : array) System.out.println(i);
             return history;
         }
     },
@@ -46,7 +45,7 @@ public enum Sorter {
                 history.add(new Marking(index, MarkingType.COMPARISON));
                 for (int j = index + 1; j < array.length; j++) {
                     history.add(new Marking(j, MarkingType.COMPARISON));
-                    if (array[index] > array[j]){
+                    if (compare(array[index], array[j])){
                         history.add(new Marking(index, MarkingType.DEMARK));
                         history.add(new Marking(j, MarkingType.DEMARK));
                         history.add(new Marking(j, MarkingType.COMPARISON));
@@ -75,7 +74,7 @@ public enum Sorter {
             while(!sorted){
                 sorted = true;
                 for (int i = 0; i < array.length - 1; i++){
-                    if (array[i] > array[i+1]){
+                    if (compare(array[i], array[i+1])){
                         swap(i, i+1, array, history);
                         sorted = false;
                     }
@@ -102,10 +101,10 @@ public enum Sorter {
                 int l = links;
                 int r = rechts - 1;
                 while (l <= r) {
-                    while (l <= r && array[l] < array[rechts]) {
+                    while (l <= r && compare(array[rechts], array[l])) {
                         l++;
                     }
-                    while (l <= r && array[r] > array[rechts]) {
+                    while (l <= r && compare(array[r], array[rechts])) {
                         r--;
                     }
                     if (l <= r) {
@@ -133,7 +132,7 @@ public enum Sorter {
                 // Find correct index for value behind i (look at all left to i)
                 int newIndex = i;
                 for (int j = 0; j < i; j++) {
-                    if (array[i] > array[j]) continue;
+                    if (compare(array[i], array[j])) continue;
                     else newIndex = j;
                     break;
                 }
@@ -141,9 +140,7 @@ public enum Sorter {
                 // Move value behind i to correct index bz swapping (from left to right)
                 int currentElement = array[i];
                 for (int j = i - 1; j > newIndex - 1; j--) {
-                    int temp = array[j];
-                    array[j] = array[j + 1];
-                    array[j + 1] = temp;
+                    swap(j, j + 1, array, history);
                 }
                 array[newIndex] = currentElement;
             }
@@ -163,7 +160,7 @@ public enum Sorter {
                 // -> Innere Schleife jedoch bei i+1 beginnen, sonst redundanter Vergleich von i mit sich selbst
                 int min = i;
                 for (int j = i+1; j < array.length; j++){
-                    if (array[j] < array[min]) min = j;
+                    if (compare(array[min], array[j])) min = j;
                 }
                 swap(i, min, array, history);
             }
@@ -180,7 +177,7 @@ public enum Sorter {
             // -> Ansatz mit while als äußere Schleife ist besser als mit for, weil der Array auch in weniger Schritten sortiert werden könnte
             for (int i = 0; i < array.length; i++){
                 for (int j = 0; j < array.length-1; j++){
-                    if (array[j] > array[j+1]) swap(j, j+1, array, history);
+                    if (compare(array[j], array[j+1])) swap(j, j+1, array, history);
                 }
             }
 
@@ -211,6 +208,7 @@ public enum Sorter {
                     if (lastReplaceable != i) swap(lastReplaceable, i, array, history);
                     lastReplaceable++;
                 }
+                compare(array[i], array[pivot]); //nur für den Counter
             }
             swap(lastReplaceable,pivot, array, history);
 
@@ -236,12 +234,22 @@ public enum Sorter {
         }
     };
 
+    private static int swaps = 0;
+    private static int comps = 0;
+
     public abstract ArrayList<SortingStep> sort(int[] array);
 
     private static void swap(int index1, int index2, int[] array, ArrayList<SortingStep> history) {
         int temp = array[index1];
         array[index1] = array[index2];
         array[index2] = temp;
+        history.add(new Swap(index1, index2));
+        swaps++;
+    }
+
+    private static boolean compare(int a, int b) {
+        comps++;
+        return a > b;
     }
 
     private static void addSwap(int index1, int index2, ArrayList<SortingStep> history){
@@ -257,8 +265,15 @@ public enum Sorter {
         if (type == MarkingType.COMPARISON) history.add(new Marking(index, MarkingType.DEMARK));
         if (type == PERMANENT) history.add(new Marking(index, MarkingType.DEMARK_PERMANENT));
     }
-}
-*/
+
+    public int getSwaps() {
+        return swaps;
+    }
+    public int getComps() {
+        return comps;
+    }
+
+}*/
 
 package my_project.model;
 
