@@ -1,3 +1,3 @@
 package my_project.model;
 
-public record Swap(int a, int b) implements SortingStep{}
+public record Swap(int indexA, int indexB) implements SortingStep{}

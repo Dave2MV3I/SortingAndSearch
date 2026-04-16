@@ -22,4 +22,7 @@ public enum Searcher {
     };
 
     public abstract ArrayList<SortingStep> search(int[] array);
+
+    // TODO Bei searching ein neues GUI erschaffen, mögliche Zahlen angeben und Eigabefeld,
+    //  danach search() starten und danach history an Visualiser geben
 }

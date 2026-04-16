@@ -21,10 +21,11 @@ public class Menu {
 
     private JButton linearSearchButton;
     private JButton binarySearchButton;
+    private JButton quick3Button;
 
     public Menu(ProgramController pc) {
         JButton[] buttons = {quickButton, selectionButton, bubbleButton, insertionButton,
-                quick2Button, selection2Button, bubble2Button, insertion2Button,
+                quick2Button, selection2Button, bubble2Button, insertion2Button, quick3Button,
                 linearSearchButton, binarySearchButton
         };
 

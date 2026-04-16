@@ -195,6 +195,22 @@ public enum Sorter {
             quicksort(min, lastReplaceable-1);
             quicksort(lastReplaceable+1, max);
         }
+    },
+
+    QUICK3{
+        private int[] array;
+        ArrayList<SortingStep> history = new ArrayList<>();
+
+        @Override
+        public ArrayList<SortingStep> sort(int[] array){
+            this.array = array;
+            // quicksort(0, array.length - 1);
+            return history;
+        }
+
+        private void quicksort(int min, int max){
+
+        }
     };
 
     public abstract ArrayList<SortingStep> sort(int[] array);

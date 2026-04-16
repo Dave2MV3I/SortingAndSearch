@@ -42,6 +42,7 @@ public class ProgramController {
         viewController.draw(visualiser);
         randomIntegers();
         visualiser.createElements(array);
+        visualiser.handleAnimation(true,true);
     }
 
     public void startProgram() {

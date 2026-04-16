@@ -11,14 +11,18 @@ import static my_project.model.MarkingType.*;
 public class Visualiser extends GraphicalObject{
     private Element[] animElements;
     private String algorithm;
-    private boolean pause;
     private ArrayList<SortingStep> history;
     private int historyIndex;
-    double swappingTimer = 0;
-    boolean swapping = false;
+    boolean animating = false;
+    final double timerDuration = 0.3;
+    double timer = timerDuration;
 
+    /*double swappingTimer = 0;
+    boolean swapping = false;
     private double newXForA;
     private double newXForB;
+    private boolean pause;*/
+
 
     @Override
     public void draw(DrawTool drawTool){
@@ -47,8 +51,15 @@ public class Visualiser extends GraphicalObject{
 
     @Override
     public void update(double dt){
-        if (swapping){
+        /*if (swapping){
             swappingTimer += dt;
+        }*/
+        if (history != null && animating) {
+            timer -= dt;
+            if (timer < 0){
+                animateStep(true);
+                timer = timerDuration;
+            }
         }
     }
 
@@ -64,6 +75,10 @@ public class Visualiser extends GraphicalObject{
         }
     }
 
+    public void handleAnimation(boolean play, boolean auto){
+        if (auto && play) animating = true;
+    }
+
     public void animateStep(boolean forward){
         SortingStep step = history.get(historyIndex);
         if (forward) historyIndex++;
@@ -71,17 +86,19 @@ public class Visualiser extends GraphicalObject{
 
         switch (step){
             case Swap s -> {
-                int indexA = ((Swap)step).a();
-                int indexB = ((Swap)step).b();
-                newXForA = 50+ indexB*animElements[indexB].getWidth();
-                newXForB = 50+ indexA*animElements[indexA].getWidth();
-                int ms = 1000;
-                swapping = true;
+                int indexA = ((Swap)step).indexA();
+                int indexB = ((Swap)step).indexB();
+                double newXForA = 50+ indexB*animElements[indexB].getWidth();
+                double newXForB = 50+ indexA*animElements[indexA].getWidth();
+                //int ms = 1000;
+                //swapping = true;
                 //swappingTimer = 0;
+                animElements[indexA].setX(newXForA);
+                animElements[indexB].setX(newXForB);
             }
 
             case Marking m -> {
-                int indexA = ((Marking)step).a();
+                int indexA = ((Marking)step).index();
                 MarkingType mt = ((Marking)step).markingType();
                 Element e = animElements[indexA];
                 e.setMarking(mt);
