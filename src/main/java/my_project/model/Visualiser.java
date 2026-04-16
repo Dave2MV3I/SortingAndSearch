@@ -2,7 +2,6 @@ package my_project.model;
 import KAGO_framework.model.GraphicalObject;
 import KAGO_framework.view.DrawTool;
 import my_project.Config;
-import my_project.control.ProgramController;
 
 import java.awt.*;
 import java.util.ArrayList;
@@ -17,11 +16,6 @@ public class Visualiser extends GraphicalObject{
     boolean animating = false;
     final double timerDuration = 0.3;
     double timer = timerDuration;
-    private final ProgramController pc;
-
-    public Visualiser(ProgramController pc){
-        this.pc = pc;
-    }
 
     @Override
     public void draw(DrawTool drawTool){
@@ -92,12 +86,9 @@ public class Visualiser extends GraphicalObject{
                 animElements[indexA].setX(newXForA);
                 animElements[indexB].setX(newXForB);
 
-                //TODO Redo in Sorter
                 Element temp = animElements[indexA];
                 animElements[indexA] = animElements[indexB];
                 animElements[indexB] = temp;
-                if (forward) pc.counter("swap");
-                else pc.counter("unswap");
             }
 
             case Marking _ -> {
@@ -105,9 +96,6 @@ public class Visualiser extends GraphicalObject{
                 MarkingType mt = ((Marking)step).markingType();
                 Element e = animElements[indexA];
                 e.setMarking(mt, forward);
-
-                if (forward){ if(mt == COMPARISON) pc.counter("comp");}
-                else pc.counter("uncomp");
             }
         }
     }
