@@ -31,6 +31,9 @@ public class Element extends GraphicalObject{
         drawTool.setLineWidth(2);
         drawTool.drawRectangle(x, y, width, height);
         drawTool.setLineWidth(1);
+
+        drawTool.setCurrentColor(this.color);
+        drawTool.drawText(x+width-width/4.5 , y -5, String.valueOf(value));
     }
 
     public void setMarking(MarkingType type, boolean forward) {

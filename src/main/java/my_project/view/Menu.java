@@ -25,6 +25,8 @@ public class Menu {
 
     private JLabel swaps;
     private JLabel comps;
+    private JButton randomiseButton;
+    private JCheckBox automaticCheckBox;
     private int compsHelp = 0;
 
     public Menu(ProgramController pc) {
@@ -38,6 +40,15 @@ public class Menu {
             AlgorithmType type = AlgorithmType.valueOf(btn.getText().toUpperCase());
             btn.addActionListener(e -> {pc.startAlgorithm(type);});
         }
+
+        randomiseButton.addActionListener(e -> {pc.randomise();});
+        automaticCheckBox.addActionListener(e -> {
+            if (automaticCheckBox.isSelected()) {
+                pc.autoAnim(true);
+            } else {
+                pc.autoAnim(false);
+            }
+        });
     }
 
     public JPanel getMainPane() {return  mainPane;}
