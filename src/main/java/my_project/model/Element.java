@@ -33,20 +33,29 @@ public class Element extends GraphicalObject{
         drawTool.setLineWidth(1);
     }
 
-    public void setMarking(MarkingType type){
-        // TODO Einige Konstanten rausnehmen und forward boolean machen!
-        switch (type){
-            case DEMARK: selected = false; break;
-            case DEMARK_PERMANENT: marked = false; break;
-            case PERMANENT: marked = true; break;
-            case COMPARISON: selected = true; break;
-            case SORTED: sorted = true; break;
+    public void setMarking(MarkingType type, boolean forward) {
+        // Der Zustand wird einfach je nach Richtung an- oder ausgeschaltet
+        switch (type) {
+            case COMPARISON -> selected = forward;
+            case PERMANENT  -> marked = forward;
+            case SORTED     -> sorted = forward;
+            case DEMARK     -> selected = !forward;
+            case DEMARK_PERMANENT -> marked = !forward;
         }
+        updateColor();
+    }
 
-        if (selected) color = Color.RED;
-        else if (sorted) color = Color.GREEN;
-        else if (marked) color = Color.GRAY;
-        else color = Color.WHITE;
+    private void updateColor() {
+        // Prioritäten-System: Was ist wichtiger zu sehen?
+        if (selected) {
+            color = Color.RED;
+        } else if (marked) {
+            color = Color.GRAY;
+        } else if (sorted) {
+            color = Color.GREEN;
+        } else {
+            color = Color.WHITE;
+        }
     }
 
     public int getValue(){return value;}

@@ -23,13 +23,6 @@ public class Visualiser extends GraphicalObject{
         this.pc = pc;
     }
 
-    /*double swappingTimer = 0;
-    boolean swapping = false;
-    private double newXForA;
-    private double newXForB;
-    private boolean pause;*/
-
-
     @Override
     public void draw(DrawTool drawTool){
         drawTool.setCurrentColor(Color.BLACK);
@@ -52,19 +45,19 @@ public class Visualiser extends GraphicalObject{
     public void setHistory(ArrayList<SortingStep> history){
         this.history = history;
         historyIndex = 0;
-        // TODO Method startAnimation?
     }
 
     @Override
     public void update(double dt){
-        /*if (swapping){
-            swappingTimer += dt;
-        }*/
         if (history != null && animating) {
             timer -= dt;
-            if (timer < 0){
-                animateStep(true);
-                timer = timerDuration;
+            if (timer < 0) {
+                if (historyIndex < history.size()) { // Prüfung einbauen!
+                    animateStep(true);
+                    timer = timerDuration;
+                } else {
+                    animating = false; // Stop, wenn fertig
+                }
             }
         }
     }
@@ -87,8 +80,9 @@ public class Visualiser extends GraphicalObject{
 
     public void animateStep(boolean forward){
         SortingStep step = history.get(historyIndex);
-        if (forward && historyIndex < history.size()-1) historyIndex++;
+        if (forward) historyIndex++;
         else if (!forward) historyIndex--;
+
         switch (step){
             case Swap s -> {
                 int indexA = ((Swap)step).indexA();
@@ -100,6 +94,12 @@ public class Visualiser extends GraphicalObject{
                 //swappingTimer = 0;
                 animElements[indexA].setX(newXForA);
                 animElements[indexB].setX(newXForB);
+
+                Element temp = animElements[indexA];
+                animElements[indexA] = animElements[indexB];
+                animElements[indexB] = temp;
+
+                //TODO Redo in Sorter
                 Element temp = animElements[indexA];
                 animElements[indexA] = animElements[indexB];
                 animElements[indexB] = temp;
@@ -111,6 +111,8 @@ public class Visualiser extends GraphicalObject{
                 int indexA = ((Marking)step).index();
                 MarkingType mt = ((Marking)step).markingType();
                 Element e = animElements[indexA];
+                e.setMarking(mt, forward);
+
                 e.setMarking(mt);
                 if (forward){ if(mt == COMPARISON) pc.counter("comp");}
                 else pc.counter("uncomp");

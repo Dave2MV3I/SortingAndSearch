@@ -2,6 +2,8 @@ package my_project.model;
 
 import java.util.ArrayList;
 
+import static my_project.model.MarkingType.*;
+
 public enum Sorter {
     INSERTION{
         @Override
@@ -10,19 +12,23 @@ public enum Sorter {
 
             for (int i = 1; i < array.length; i++){
                 int key = array[i];
-                history.add(new Marking(i, MarkingType.PERMANENT));
+                //history.add(new Marking(i, MarkingType.PERMANENT));
+                addMark(i, PERMANENT, history);
                 int j = i-1;
                 while (j >= 0 && array[j] > key) {
-                    history.add(new Marking(j, MarkingType.COMPARISON));
+                    //history.add(new Marking(j, MarkingType.COMPARISON));
+                    addMark(j, COMPARISON, history);
                     array[j+1] = array[j];
-                    history.add(new Swap(j, j+1)); // Nur zum Visualisieren, in Wirklichkeit wird key gemerkt und die anderen kopiert, letztes mit key ersetzt
-                    history.add(new Marking(j, MarkingType.DEMARK));
+                    //history.add(new Swap(j, j+1)); // Nur zum Visualisieren, in Wirklichkeit wird key gemerkt und die anderen kopiert, letztes mit key ersetzt
+                    //history.add(new Marking(j, MarkingType.DEMARK));
+                    addSwap(j, j+1, history);
+                    addMark(j, DEMARK, history);
                     j--;
                 }
                 array[j+1] = key;
-                history.add(new Marking(j+1, MarkingType.DEMARK_PERMANENT));
+                //history.add(new Marking(j+1, MarkingType.DEMARK_PERMANENT));
+                addMark(j+1, DEMARK_PERMANENT, history);
             }
-
             return history;
         }
     },
@@ -235,5 +241,19 @@ public enum Sorter {
         array[index1] = array[index2];
         array[index2] = temp;
         history.add(new Swap(index1, index2));
+    }
+
+    private static void addSwap(int index1, int index2, ArrayList<SortingStep> history){
+        history.add(new Swap(index1, index2));
+    }
+
+    private static void addMark(int index, MarkingType type, ArrayList<SortingStep> history) {
+        history.add(new Marking(index, type));
+    }
+
+    private static void addUnmark(int index, MarkingType type, ArrayList<SortingStep> history) {
+        // Nutzt den entsprechenden Demark-Typ
+        if (type == MarkingType.COMPARISON) history.add(new Marking(index, MarkingType.DEMARK));
+        if (type == PERMANENT) history.add(new Marking(index, MarkingType.DEMARK_PERMANENT));
     }
 }
