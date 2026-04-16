@@ -48,9 +48,9 @@ public class Element extends GraphicalObject{
     private void updateColor() {
         // Prioritäten-System: Was ist wichtiger zu sehen?
         if (selected) {
-            color = Color.RED;
-        } else if (marked) {
             color = Color.GRAY;
+        } else if (marked) {
+            color = Color.RED;
         } else if (sorted) {
             color = Color.GREEN;
         } else {

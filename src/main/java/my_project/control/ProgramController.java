@@ -50,7 +50,6 @@ public class ProgramController {
     }
 
     public void updateProgram(double dt){
-
     }
 
     public void startAlgorithm(AlgorithmType algType){
@@ -62,7 +61,7 @@ public class ProgramController {
             int[] originalArray = Arrays.copyOf(array, array.length);
             Sorter sorter = Sorter.valueOf(algType.name().toUpperCase());
             ArrayList<SortingStep> history = sorter.sort(array);
-
+            for (int i : array) System.out.print(i+ " ,");
             visualiser.setHistory(history);
             visualiser.setAlgorithm(algType.toString());
             // TEST visualiser.createElements(array);
