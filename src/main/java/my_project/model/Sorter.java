@@ -236,8 +236,4 @@ public enum Sorter {
         array[index2] = temp;
         history.add(new Swap(index1, index2));
     }
-
-    private static boolean compare(int index1, int index2, int[] array) {
-        return array[index1] > array[index2];
-    }
 }
