@@ -17,7 +17,7 @@ public class Visualiser extends GraphicalObject{
     boolean animating = false;
     final double timerDuration = 0.3;
     double timer = timerDuration;
-    private ProgramController pc;
+    private final ProgramController pc;
 
     public Visualiser(ProgramController pc){
         this.pc = pc;
@@ -81,23 +81,16 @@ public class Visualiser extends GraphicalObject{
     public void animateStep(boolean forward){
         SortingStep step = history.get(historyIndex);
         if (forward) historyIndex++;
-        else if (!forward) historyIndex--;
+        else historyIndex--;
 
         switch (step){
-            case Swap s -> {
+            case Swap _ -> {
                 int indexA = ((Swap)step).indexA();
                 int indexB = ((Swap)step).indexB();
                 double newXForA = 50+ indexB*animElements[indexB].getWidth();
                 double newXForB = 50+ indexA*animElements[indexA].getWidth();
-                //int ms = 1000;
-                //swapping = true;
-                //swappingTimer = 0;
                 animElements[indexA].setX(newXForA);
                 animElements[indexB].setX(newXForB);
-
-                Element temp = animElements[indexA];
-                animElements[indexA] = animElements[indexB];
-                animElements[indexB] = temp;
 
                 //TODO Redo in Sorter
                 Element temp = animElements[indexA];
@@ -107,13 +100,12 @@ public class Visualiser extends GraphicalObject{
                 else pc.counter("unswap");
             }
 
-            case Marking m -> {
+            case Marking _ -> {
                 int indexA = ((Marking)step).index();
                 MarkingType mt = ((Marking)step).markingType();
                 Element e = animElements[indexA];
                 e.setMarking(mt, forward);
 
-                e.setMarking(mt);
                 if (forward){ if(mt == COMPARISON) pc.counter("comp");}
                 else pc.counter("uncomp");
             }
