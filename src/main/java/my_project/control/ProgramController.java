@@ -40,8 +40,8 @@ public class ProgramController {
 
         visualiser = new Visualiser();
         viewController.draw(visualiser);
-        shuffleIntegers();
-        visualiser.setAnimElementsWhenShuffling(getShuffeledElements());
+        randomIntegers();
+        visualiser.createElements(array);
     }
 
     public void startProgram() {
@@ -62,12 +62,9 @@ public class ProgramController {
             Sorter sorter = Sorter.valueOf(algType.name().toUpperCase());
             ArrayList<SortingStep> history = sorter.sort(array);
 
-            Element[] animElements = new Element[array.length];
-            for (int i = 0; i < array.length; i++){
-                animElements[i] = new Element(originalArray[i]);
-            }
-            visualiser.prepareAnimation(history, animElements);
+            visualiser.setHistory(history);
             visualiser.setAlgorithm(algType.toString());
+            // TEST visualiser.createElements(array);
 
             for (SortingStep step : history){
                 if (step instanceof Swap){
@@ -79,16 +76,8 @@ public class ProgramController {
 
     }
 
-    private void shuffleIntegers(){
+    private void randomIntegers(){
         for (int i = 0; i < array.length; i++)
             array[i] = (int)(3+Math.random()*(range-3));
-    }
-
-    public Element[] getShuffeledElements(){
-        Element[] shuffeledElements = new Element[array.length];
-        for (int i = 0; i < array.length; i++){
-            shuffeledElements[i] = new Element(array[i]);
-        }
-        return shuffeledElements;
     }
 }

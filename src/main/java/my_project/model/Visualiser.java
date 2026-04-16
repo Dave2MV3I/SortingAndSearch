@@ -39,30 +39,28 @@ public class Visualiser extends GraphicalObject{
         this.algorithm = algorithm;
     }
 
-    public void prepareAnimation(ArrayList<SortingStep> history, Element[] originalElements){
-        this.animElements = originalElements;
+    public void setHistory(ArrayList<SortingStep> history){
         this.history = history;
-        prepareElements();
         historyIndex = 0;
-    }
-
-    public void setAnimElementsWhenShuffling(Element[] elements){
-        for (Element i : elements) System.out.println(i.getValue());
-        animElements = elements;
-        prepareElements();
-    }
-
-    private void prepareElements(){
-        for (int i = 0; i < animElements.length; i++) {
-            animElements[i].setWidth(((Config.WINDOW_WIDTH-100)/animElements.length));
-            animElements[i].setX(50+ i*animElements[i].getWidth());
-        }
+        // TODO Method startAnimation?
     }
 
     @Override
     public void update(double dt){
         if (swapping){
             swappingTimer += dt;
+        }
+    }
+
+    public void createElements(int[] array){
+        animElements = new Element[array.length];
+        for (int i = 0; i < array.length; i++){
+            animElements[i] = new Element(array[i]);
+        }
+
+        for (int i = 0; i < animElements.length; i++) {
+            animElements[i].setWidth(((Config.WINDOW_WIDTH-100)/animElements.length));
+            animElements[i].setX(50+ i*animElements[i].getWidth());
         }
     }
 
