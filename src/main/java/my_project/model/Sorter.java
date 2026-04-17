@@ -229,8 +229,26 @@ public enum Sorter {
             return history;
         }
 
-        private void quicksort(int min, int max){
-
+        private void quicksort(int low, int high){
+            if (low >= high) return;
+            int pivot = array[high];
+            int lt = low;
+            int i = low;
+            int gt = high;
+            while (i <= gt){
+                if (array[i] < pivot){
+                    swap(lt, i, array, history);
+                    lt++;
+                    i++;
+                } else if (array[i] > pivot){
+                    swap(i, gt, array, history);
+                    gt--;
+                } else {
+                    i++;
+                }
+            }
+            quicksort(low, lt - 1);
+            quicksort(gt + 1, high);
         }
     };
 
