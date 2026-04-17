@@ -111,4 +111,8 @@ public class ProgramController {
     }
 
     public void searchFor(int num){searchedNumber = num;}
+
+    public void changeAutoSpeed(int speed){
+        visualiser.setTimerDuration(speed);
+    }
 }

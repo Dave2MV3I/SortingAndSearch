@@ -27,6 +27,7 @@ public class Menu {
     private JLabel comps;
     private JButton randomiseButton;
     private JCheckBox automaticCheckBox;
+    private JSlider slider1;
     private int compsHelp = 0;
 
     public Menu(ProgramController pc) {
@@ -48,6 +49,11 @@ public class Menu {
             } else {
                 pc.autoAnim(false);
             }
+        });
+
+        slider1.addChangeListener(e -> {
+            System.out.println(slider1.getValue());
+            pc.changeAutoSpeed(slider1.getValue());
         });
     }
 

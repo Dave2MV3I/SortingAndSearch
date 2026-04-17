@@ -14,7 +14,7 @@ public class Visualiser extends GraphicalObject{
     private ArrayList<SortingStep> history;
     private int historyIndex;
     boolean animating = false;
-    final double timerDuration = 0.3;
+    double timerDuration = 0.3;
     double timer = timerDuration;
 
     @Override
@@ -99,4 +99,6 @@ public class Visualiser extends GraphicalObject{
             }
         }
     }
+
+    public void setTimerDuration(int timerDuration){this.timerDuration = timerDuration/100;}
 }

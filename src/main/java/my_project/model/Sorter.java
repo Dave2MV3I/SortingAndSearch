@@ -1,6 +1,336 @@
 package my_project.model;
 
 import java.util.ArrayList;
+import static my_project.model.MarkingType.*;
+
+public enum Sorter {
+    INSERTION{
+        @Override
+        public ArrayList<SortingStep> sort(int[] array){
+            ArrayList<SortingStep> history = new ArrayList<>();
+            addMark(0, SORTED, history);
+
+            for (int i = 1; i < array.length; i++){
+                int key = array[i];
+                addMark(i, PERMANENT, history);
+
+                int j = i-1;
+                while (j >= 0) {
+                    addMark(j, COMPARISON, history); // Vergleichselement markieren (Rot)
+
+                    if (compare(array[j], key)) {
+                        array[j+1] = array[j]; // Logisches Verschieben
+
+                        addSwap(j, j+1, history); // Physischer Swap für die Optik
+                        swaps++; // Statt swap(0,0), einfach den Counter direkt erhöhen
+
+                        // WICHTIG: Das rote Element ist durch den visuellen Swap nun auf j+1 gerutscht!
+                        addMark(j+1, DEMARK, history);
+                        j--;
+                    } else {
+                        // Element war nicht größer, Rote Markierung wieder weg (ist noch auf j)
+                        addMark(j, DEMARK, history);
+                        break;
+                    }
+                }
+                array[j+1] = key;
+
+                // Key-Element ist jetzt final an Position j+1 -> Dauer-Markierung entfernen
+                addMark(j+1, DEMARK_PERMANENT, history);
+
+                // Alles bis zur aktuellen Position i ist nun im sortierten Bereich (Grün)
+                for (int k = 0; k <= i; k++) {
+                    addMark(k, SORTED, history);
+                }
+            }
+            return history;
+        }
+    },
+
+    SELECTION{
+        @Override
+        public ArrayList<SortingStep> sort(int[] array){
+            ArrayList<SortingStep> history = new ArrayList<>();
+
+            for(int i = 0; i < array.length-1; i++) {
+                int index = i;
+                addMark(index, PERMANENT, history); // Aktuelles Minimum Grau markieren
+
+                for (int j = i + 1; j < array.length; j++) {
+                    addMark(j, COMPARISON, history); // Vergleichselement Rot
+                    if (compare(array[index], array[j])){
+                        addMark(index, DEMARK_PERMANENT, history); // Altes Minimum entmarkieren
+                        index = j;
+                        addMark(index, PERMANENT, history); // Neues Minimum Grau markieren
+                    }
+                    addMark(j, DEMARK, history); // Rote Vergleichsmarkierung weg
+                }
+                addMark(index, DEMARK_PERMANENT, history); // Grau weg vor dem Swap
+                swap(i, index, array, history);
+                addMark(i, SORTED, history); // Finale Position Grün
+            }
+            addMark(array.length-1, SORTED, history); // Letztes Element ist automatisch sortiert
+
+            return history;
+        }
+    },
+
+    BUBBLE{
+        @Override
+        public ArrayList<SortingStep> sort(int[] array){
+            ArrayList<SortingStep> history = new ArrayList<>();
+            int n = array.length;
+            boolean sorted = false;
+
+            while(!sorted){
+                sorted = true;
+                for (int i = 0; i < n - 1; i++){
+                    addMark(i, COMPARISON, history);
+                    addMark(i+1, COMPARISON, history);
+                    if (compare(array[i], array[i+1])){
+                        swap(i, i+1, array, history);
+                        sorted = false;
+                    }
+                    addMark(i, DEMARK, history);
+                    addMark(i+1, DEMARK, history);
+                }
+                n--;
+                addMark(n, SORTED, history); // Element ist nun ganz rechts "aufgestiegen" (Grün)
+            }
+            // Rest als sortiert markieren
+            for (int i = 0; i < n; i++) {
+                addMark(i, SORTED, history);
+            }
+
+            return history;
+        }
+    },
+
+    QUICK{
+        @Override
+        public ArrayList<SortingStep> sort(int[] array){
+            ArrayList<SortingStep> history = new ArrayList<>();
+            quicksort(0, array.length - 1, array, history);
+
+            // Ganz am Ende alles Grün machen
+            for (int i = 0; i < array.length; i++) {
+                addMark(i, SORTED, history);
+            }
+            return history;
+        }
+
+        private void quicksort(int links, int rechts, int[] array, ArrayList<SortingStep> history){
+            if (links < rechts) {
+                int l = links;
+                int r = rechts - 1;
+                int pivot = rechts;
+
+                addMark(pivot, PERMANENT, history); // Pivot Element (Grau)
+
+                while (l <= r) {
+                    while (l <= r) {
+                        addMark(l, COMPARISON, history);
+                        if (compare(array[pivot], array[l])) {
+                            addMark(l, DEMARK, history);
+                            l++;
+                        } else break;
+                    }
+                    while (l <= r) {
+                        addMark(r, COMPARISON, history);
+                        if (compare(array[r], array[pivot])) {
+                            addMark(r, DEMARK, history);
+                            r--;
+                        } else break;
+                    }
+                    if (l <= r) {
+                        swap(l, r, array, history);
+                        addMark(l, DEMARK, history);
+                        addMark(r, DEMARK, history);
+                        l++;
+                        r--;
+                    }
+                }
+                // Hängengebliebene rote Markierungen entfernen
+                if (l <= rechts) addMark(l, DEMARK, history);
+                if (r >= links) addMark(r, DEMARK, history);
+
+                addMark(pivot, DEMARK_PERMANENT, history); // Pivot Grau weg
+                swap(rechts, l, array, history);
+                addMark(l, SORTED, history); // Pivot ist nun an seiner finalen Stelle (Grün)
+
+                quicksort(links, l-1, array, history);
+                quicksort(l+1, rechts, array, history);
+            } else if (links == rechts) {
+                addMark(links, SORTED, history); // Einzelnes Element ist bereits am Platz
+            }
+        }
+    },
+
+    INSERTION2{
+        @Override
+        public ArrayList<SortingStep> sort(int[] array){
+            ArrayList<SortingStep> history = new ArrayList<>();
+            addMark(0, SORTED, history);
+            for (int i = 1; i < array.length; i++) {
+                int newIndex = i;
+                for (int j = 0; j < i; j++) {
+                    addMark(j, COMPARISON, history);
+                    boolean greater = compare(array[i], array[j]);
+                    addMark(j, DEMARK, history);
+
+                    if (!greater) {
+                        newIndex = j;
+                        break;
+                    }
+                }
+
+                int currentElement = array[i];
+                addMark(i, PERMANENT, history);
+
+                for (int j = i - 1; j > newIndex - 1; j--) {
+                    swap(j, j + 1, array, history);
+                }
+                array[newIndex] = currentElement;
+                addMark(newIndex, DEMARK_PERMANENT, history);
+
+                for(int k=0; k<=i; k++) addMark(k, SORTED, history);
+            }
+            return history;
+        }
+    },
+
+    SELECTION2{
+        @Override
+        public ArrayList<SortingStep> sort(int[] array){
+            ArrayList<SortingStep> history = new ArrayList<>();
+            for (int i = 0; i < array.length-1; i++){
+                int min = i;
+                addMark(min, PERMANENT, history);
+                for (int j = i+1; j < array.length; j++){
+                    addMark(j, COMPARISON, history);
+                    if (compare(array[min], array[j])) {
+                        addMark(min, DEMARK_PERMANENT, history);
+                        min = j;
+                        addMark(min, PERMANENT, history);
+                    }
+                    addMark(j, DEMARK, history);
+                }
+                addMark(min, DEMARK_PERMANENT, history);
+                swap(i, min, array, history);
+                addMark(i, SORTED, history);
+            }
+            addMark(array.length-1, SORTED, history);
+            return history;
+        }
+    },
+
+    BUBBLE2{
+        @Override
+        public ArrayList<SortingStep> sort(int[] array){
+            ArrayList<SortingStep> history = new ArrayList<>();
+            for (int i = 0; i < array.length; i++){
+                for (int j = 0; j < array.length-1 - i; j++){ // Optimerung: -i
+                    addMark(j, COMPARISON, history);
+                    addMark(j+1, COMPARISON, history);
+                    if (compare(array[j], array[j+1])) {
+                        swap(j, j+1, array, history);
+                    }
+                    addMark(j, DEMARK, history);
+                    addMark(j+1, DEMARK, history);
+                }
+                addMark(array.length - 1 - i, SORTED, history);
+            }
+            return history;
+        }
+    },
+
+    QUICK2{
+        @Override
+        public ArrayList<SortingStep> sort(int[] array){
+            ArrayList<SortingStep> history = new ArrayList<>();
+            quicksort(0, array.length - 1, array, history);
+            for(int i = 0; i < array.length; i++) addMark(i, SORTED, history);
+            return history;
+        }
+
+        private void quicksort(int min, int max, int[] array, ArrayList<SortingStep> history){
+            if (min >= max) {
+                if (min == max) addMark(min, SORTED, history);
+                return;
+            }
+
+            int pivot = max;
+            addMark(pivot, PERMANENT, history); // Pivot Grau
+
+            int lastReplaceable = min;
+            for (int i = min; i < max; i++){
+                addMark(i, COMPARISON, history); // Aktuelles Element rot
+                boolean isLessOrEqual = !compare(array[i], array[pivot]);
+
+                if (isLessOrEqual){
+                    if (lastReplaceable != i) {
+                        swap(lastReplaceable, i, array, history);
+                        // Nach dem Swap ist das rote Element auf lastReplaceable
+                        addMark(lastReplaceable, DEMARK, history);
+                    } else {
+                        addMark(i, DEMARK, history);
+                    }
+                    lastReplaceable++;
+                } else {
+                    addMark(i, DEMARK, history); // Rot weg
+                }
+            }
+            addMark(pivot, DEMARK_PERMANENT, history);
+            swap(lastReplaceable, pivot, array, history);
+            addMark(lastReplaceable, SORTED, history); // Pivot an richtiger Stelle
+
+            quicksort(min, lastReplaceable-1, array, history);
+            quicksort(lastReplaceable+1, max, array, history);
+        }
+    },
+
+    QUICK3{
+        @Override
+        public ArrayList<SortingStep> sort(int[] array){
+            ArrayList<SortingStep> history = new ArrayList<>();
+            return history;
+        }
+    };
+
+    private static int swaps = 0;
+    private static int comps = 0;
+
+    public abstract ArrayList<SortingStep> sort(int[] array);
+
+    private static void swap(int index1, int index2, int[] array, ArrayList<SortingStep> history) {
+        int temp = array[index1];
+        array[index1] = array[index2];
+        array[index2] = temp;
+        history.add(new Swap(index1, index2));
+        swaps++;
+    }
+
+    private static boolean compare(int a, int b) {
+        comps++;
+        return a > b;
+    }
+
+    private static void addSwap(int index1, int index2, ArrayList<SortingStep> history){
+        history.add(new Swap(index1, index2));
+    }
+
+    private static void addMark(int index, MarkingType type, ArrayList<SortingStep> history) {
+        history.add(new Marking(index, type));
+    }
+
+    public int getSwaps() { return swaps; }
+    public int getComps() { return comps; }
+}
+
+/*
+package my_project.model;
+
+import java.util.ArrayList;
 
 import static my_project.model.MarkingType.*;
 
@@ -273,4 +603,4 @@ public enum Sorter {
         return comps;
     }
 
-}
+}*/
