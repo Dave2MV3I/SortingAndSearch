@@ -1,12 +1,12 @@
 package my_project.model;
 
-import java.util.ArrayList;
+import KAGO_framework.model.abitur.datenstrukturen.List;
 
 public enum Searcher {
     LINEARSEARCH{
         @Override
-        public ArrayList<SortingStep> search(int[] array, int searchedNumber){
-            ArrayList<SortingStep> history = new ArrayList<>();
+        public List<SortingStep> search(int[] array, int searchedNumber){
+            List<SortingStep> history = new List<>();
 
             /*for(int i = 0; i < array.length; i++){
                 if(array[i] == searchedNumber){
@@ -21,8 +21,8 @@ public enum Searcher {
 
     BINARYSEARCH{
         @Override
-        public ArrayList<SortingStep> search(int[] array, int searchedNumber){
-            ArrayList<SortingStep> history = new ArrayList<>();
+        public List<SortingStep> search(int[] array, int searchedNumber){
+            List<SortingStep> history = new List<>();
             binsearch(searchedNumber, 0, array.length-1, array);
             return history;
         }
@@ -40,8 +40,9 @@ public enum Searcher {
         }
     };
 
-    public abstract ArrayList<SortingStep> search(int[] array, int searchedNumber);
+    public abstract List<SortingStep> search(int[] array, int searchedNumber);
 
     // TODO Bei searching ein neues GUI erschaffen, mögliche Zahlen angeben und Eigabefeld,
     //  danach search() starten und danach history an Visualiser geben
+    // TODO Static Methoden von sorter nutzen um die history zu erweitern statt Codeduplizierung
 }

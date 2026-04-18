@@ -1,13 +1,13 @@
 package my_project.model;
 
-import java.util.ArrayList;
+import KAGO_framework.model.abitur.datenstrukturen.List;
 import static my_project.model.MarkingType.*;
 
 public enum Sorter {
     INSERTION{
         @Override
-        public ArrayList<SortingStep> sort(int[] array){
-            ArrayList<SortingStep> history = new ArrayList<>();
+        public List<SortingStep> sort(int[] array){
+            List<SortingStep> history = new List<>();
             addMark(0, SORTED, history);
 
             for (int i = 1; i < array.length; i++){
@@ -49,8 +49,8 @@ public enum Sorter {
 
     SELECTION{
         @Override
-        public ArrayList<SortingStep> sort(int[] array){
-            ArrayList<SortingStep> history = new ArrayList<>();
+        public List<SortingStep> sort(int[] array){
+            List<SortingStep> history = new List<>();
 
             for(int i = 0; i < array.length-1; i++) {
                 int index = i;
@@ -77,8 +77,8 @@ public enum Sorter {
 
     BUBBLE{
         @Override
-        public ArrayList<SortingStep> sort(int[] array){
-            ArrayList<SortingStep> history = new ArrayList<>();
+        public List<SortingStep> sort(int[] array){
+            List<SortingStep> history = new List<>();
             int n = array.length;
             boolean sorted = false;
 
@@ -108,8 +108,8 @@ public enum Sorter {
 
     QUICK{
         @Override
-        public ArrayList<SortingStep> sort(int[] array){
-            ArrayList<SortingStep> history = new ArrayList<>();
+        public List<SortingStep> sort(int[] array){
+            List<SortingStep> history = new List<>();
             quicksort(0, array.length - 1, array, history);
 
             // Ganz am Ende alles Grün machen
@@ -119,7 +119,7 @@ public enum Sorter {
             return history;
         }
 
-        private void quicksort(int links, int rechts, int[] array, ArrayList<SortingStep> history){
+        private void quicksort(int links, int rechts, int[] array, List<SortingStep> history){
             if (links < rechts) {
                 int l = links;
                 int r = rechts - 1;
@@ -168,8 +168,8 @@ public enum Sorter {
 
     INSERTION2{
         @Override
-        public ArrayList<SortingStep> sort(int[] array){
-            ArrayList<SortingStep> history = new ArrayList<>();
+        public List<SortingStep> sort(int[] array){
+            List<SortingStep> history = new List<>();
             addMark(0, SORTED, history);
             for (int i = 1; i < array.length; i++) {
                 int newIndex = i;
@@ -201,8 +201,8 @@ public enum Sorter {
 
     SELECTION2{
         @Override
-        public ArrayList<SortingStep> sort(int[] array){
-            ArrayList<SortingStep> history = new ArrayList<>();
+        public List<SortingStep> sort(int[] array){
+            List<SortingStep> history = new List<>();
             for (int i = 0; i < array.length-1; i++){
                 int min = i;
                 addMark(min, PERMANENT, history);
@@ -226,8 +226,8 @@ public enum Sorter {
 
     BUBBLE2{
         @Override
-        public ArrayList<SortingStep> sort(int[] array){
-            ArrayList<SortingStep> history = new ArrayList<>();
+        public List<SortingStep> sort(int[] array){
+            List<SortingStep> history = new List<>();
             for (int i = 0; i < array.length; i++){
                 for (int j = 0; j < array.length-1 - i; j++){ // Optimerung: -i
                     addMark(j, COMPARISON, history);
@@ -246,14 +246,14 @@ public enum Sorter {
 
     QUICK2{
         @Override
-        public ArrayList<SortingStep> sort(int[] array){
-            ArrayList<SortingStep> history = new ArrayList<>();
+        public List<SortingStep> sort(int[] array){
+            List<SortingStep> history = new List<>();
             quicksort(0, array.length - 1, array, history);
             for(int i = 0; i < array.length; i++) addMark(i, SORTED, history);
             return history;
         }
 
-        private void quicksort(int min, int max, int[] array, ArrayList<SortingStep> history){
+        private void quicksort(int min, int max, int[] array, List<SortingStep> history){
             if (min >= max) {
                 if (min == max) addMark(min, SORTED, history);
                 return;
@@ -291,8 +291,8 @@ public enum Sorter {
 
     QUICK3{
         @Override
-        public ArrayList<SortingStep> sort(int[] array){
-            ArrayList<SortingStep> history = new ArrayList<>();
+        public List<SortingStep> sort(int[] array){
+            List<SortingStep> history = new List<>();
             return history;
         }
     };
@@ -300,13 +300,13 @@ public enum Sorter {
     private static int swaps = 0;
     private static int comps = 0;
 
-    public abstract ArrayList<SortingStep> sort(int[] array);
+    public abstract List<SortingStep> sort(int[] array);
 
-    private static void swap(int index1, int index2, int[] array, ArrayList<SortingStep> history) {
+    private static void swap(int index1, int index2, int[] array, List<SortingStep> history) {
         int temp = array[index1];
         array[index1] = array[index2];
         array[index2] = temp;
-        history.add(new Swap(index1, index2));
+        history.append(new Swap(index1, index2));
         swaps++;
     }
 
@@ -315,12 +315,12 @@ public enum Sorter {
         return a > b;
     }
 
-    private static void addSwap(int index1, int index2, ArrayList<SortingStep> history){
-        history.add(new Swap(index1, index2));
+    private static void addSwap(int index1, int index2, List<SortingStep> history){
+        history.append(new Swap(index1, index2));
     }
 
-    private static void addMark(int index, MarkingType type, ArrayList<SortingStep> history) {
-        history.add(new Marking(index, type));
+    private static void addMark(int index, MarkingType type, List<SortingStep> history) {
+        history.append(new Marking(index, type));
     }
 
     public int getSwaps() { return swaps; }
@@ -330,15 +330,15 @@ public enum Sorter {
 /*
 package my_project.model;
 
-import java.util.ArrayList;
+import java.util.List;
 
 import static my_project.model.MarkingType.*;
 
 public enum Sorter {
     INSERTION{
         @Override
-        public ArrayList<SortingStep> sort(int[] array){
-            ArrayList<SortingStep> history = new ArrayList<>();
+        public List<SortingStep> sort(int[] array){
+            List<SortingStep> history = new List<>();
 
             for (int i = 1; i < array.length; i++){
                 int key = array[i];
@@ -366,8 +366,8 @@ public enum Sorter {
 
     SELECTION{
         @Override
-        public ArrayList<SortingStep> sort(int[] array){
-            ArrayList<SortingStep> history = new ArrayList<>();
+        public List<SortingStep> sort(int[] array){
+            List<SortingStep> history = new List<>();
 
             int index;
             for(int i = 0; i < array.length-1; i++) {
@@ -397,8 +397,8 @@ public enum Sorter {
 
     BUBBLE{
         @Override
-        public ArrayList<SortingStep> sort(int[] array){
-            ArrayList<SortingStep> history = new ArrayList<>();
+        public List<SortingStep> sort(int[] array){
+            List<SortingStep> history = new List<>();
 
             boolean sorted = false;
             while(!sorted){
@@ -417,10 +417,10 @@ public enum Sorter {
 
     QUICK{
         private int[] array;
-        final ArrayList<SortingStep> history = new ArrayList<>();
+        final List<SortingStep> history = new List<>();
 
         @Override
-        public ArrayList<SortingStep> sort(int[] array){
+        public List<SortingStep> sort(int[] array){
             this.array = array;
             quicksort(0, array.length - 1);
             return history;
@@ -453,8 +453,8 @@ public enum Sorter {
 
     INSERTION2{
         @Override
-        public ArrayList<SortingStep> sort(int[] array){
-            ArrayList<SortingStep> history = new ArrayList<>();
+        public List<SortingStep> sort(int[] array){
+            List<SortingStep> history = new List<>();
 
             // -> This approach is less efficient:
             // -> Here you look for the correct index and move later instead of starting to move immediately
@@ -481,8 +481,8 @@ public enum Sorter {
 
     SELECTION2{
         @Override
-        public ArrayList<SortingStep> sort(int[] array){
-            ArrayList<SortingStep> history = new ArrayList<>();
+        public List<SortingStep> sort(int[] array){
+            List<SortingStep> history = new List<>();
 
             // -> &Auml;u&szlig;ere Schleife bis length-1, weil letztes Element automatisch sortiert & sonst IndexOutOfBoundsException
             for (int i = 0; i < array.length-1; i++){
@@ -501,8 +501,8 @@ public enum Sorter {
 
     BUBBLE2{
         @Override
-        public ArrayList<SortingStep> sort(int[] array){
-            ArrayList<SortingStep> history = new ArrayList<>();
+        public List<SortingStep> sort(int[] array){
+            List<SortingStep> history = new List<>();
 
             // -> Ansatz mit while als &auml;u&szlig;ere Schleife ist besser als mit for, weil der Array auch in weniger Schritten sortiert werden k&ouml;nnte
             for (int i = 0; i < array.length; i++){
@@ -517,10 +517,10 @@ public enum Sorter {
 
     QUICK2{
         private int[] array;
-        ArrayList<SortingStep> history = new ArrayList<>();
+        List<SortingStep> history = new List<>();
 
         @Override
-        public ArrayList<SortingStep> sort(int[] array){
+        public List<SortingStep> sort(int[] array){
             this.array = array;
             quicksort(0, array.length - 1);
             return history;
@@ -550,10 +550,10 @@ public enum Sorter {
 
     QUICK3{
         private int[] array;
-        ArrayList<SortingStep> history = new ArrayList<>();
+        List<SortingStep> history = new List<>();
 
         @Override
-        public ArrayList<SortingStep> sort(int[] array){
+        public List<SortingStep> sort(int[] array){
             this.array = array;
             // quicksort(0, array.length - 1);
             return history;
@@ -585,9 +585,9 @@ public enum Sorter {
     private static int swaps = 0;
     private static int comps = 0;
 
-    public abstract ArrayList<SortingStep> sort(int[] array);
+    public abstract List<SortingStep> sort(int[] array);
 
-    private static void swap(int index1, int index2, int[] array, ArrayList<SortingStep> history) {
+    private static void swap(int index1, int index2, int[] array, List<SortingStep> history) {
         int temp = array[index1];
         array[index1] = array[index2];
         array[index2] = temp;
@@ -600,15 +600,15 @@ public enum Sorter {
         return a > b;
     }
 
-    private static void addSwap(int index1, int index2, ArrayList<SortingStep> history){
+    private static void addSwap(int index1, int index2, List<SortingStep> history){
         history.add(new Swap(index1, index2));
     }
 
-    private static void addMark(int index, MarkingType type, ArrayList<SortingStep> history) {
+    private static void addMark(int index, MarkingType type, List<SortingStep> history) {
         history.add(new Marking(index, type));
     }
 
-    private static void addUnmark(int index, MarkingType type, ArrayList<SortingStep> history) {
+    private static void addUnmark(int index, MarkingType type, List<SortingStep> history) {
         // Nutzt den entsprechenden Demark-Typ
         if (type == MarkingType.COMPARISON) history.add(new Marking(index, MarkingType.DEMARK));
         if (type == PERMANENT) history.add(new Marking(index, MarkingType.DEMARK_PERMANENT));

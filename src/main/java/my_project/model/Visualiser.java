@@ -4,18 +4,16 @@ import KAGO_framework.view.DrawTool;
 import my_project.Config;
 
 import java.awt.*;
-import java.util.ArrayList;
-
-import static my_project.model.MarkingType.*;
+import KAGO_framework.model.abitur.datenstrukturen.List;
 
 public class Visualiser extends GraphicalObject{
     private Element[] animElements;
     private String algorithm;
-    private ArrayList<SortingStep> history;
+    private List<SortingStep> history;
     private int historyIndex;
     boolean animating = false;
-    double timerDuration = 0.3;
-    double timer = timerDuration;
+    double cooldownDuration = 0.3;
+    double timer = cooldownDuration;
 
     @Override
     public void draw(DrawTool drawTool){
@@ -36,9 +34,10 @@ public class Visualiser extends GraphicalObject{
         this.algorithm = algorithm;
     }
 
-    public void setHistory(ArrayList<SortingStep> history){
+    public void setHistory(List<SortingStep> history){
         this.history = history;
         historyIndex = 0;
+        history.toFirst();
     }
 
     @Override
@@ -46,9 +45,9 @@ public class Visualiser extends GraphicalObject{
         if (history != null && animating) {
             timer -= dt;
             if (timer < 0) {
-                if (historyIndex < history.size()) { // Prüfung einbauen!
+                if (history.hasAccess()) { // Prüfung!
                     animateStep(true);
-                    timer = timerDuration;
+                    timer = cooldownDuration;
                 } else {
                     animating = false; // Stop, wenn fertig
                 }
@@ -73,9 +72,18 @@ public class Visualiser extends GraphicalObject{
     }
 
     public void animateStep(boolean forward){
-        SortingStep step = history.get(historyIndex);
-        if (forward) historyIndex++;
-        else historyIndex--;
+        SortingStep step = history.getContent();
+        if (forward) {
+            historyIndex++;
+            history.next();
+        }
+        else {
+            historyIndex--;
+            history.toFirst();
+            for (int i = 0; i < historyIndex; i++){
+                history.next();
+            }
+        }
 
         switch (step){
             case Swap _ -> {
@@ -100,5 +108,5 @@ public class Visualiser extends GraphicalObject{
         }
     }
 
-    public void setTimerDuration(int timerDuration){this.timerDuration = timerDuration/100;}
+    public void setCooldownDuration(double cooldownDuration){this.cooldownDuration = cooldownDuration/100;}
 }

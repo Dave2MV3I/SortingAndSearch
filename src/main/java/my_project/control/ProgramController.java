@@ -7,7 +7,7 @@ import my_project.view.Search;
 
 import javax.swing.*;
 import java.awt.*;
-import java.util.ArrayList;
+import KAGO_framework.model.abitur.datenstrukturen.List;
 import java.util.Arrays;
 
 import static my_project.model.AlgorithmType.BINARYSEARCH;
@@ -74,19 +74,13 @@ public class ProgramController {
         else {
             int[] originalArray = Arrays.copyOf(array, array.length);
             sorter = Sorter.valueOf(algType.name().toUpperCase());
-            ArrayList<SortingStep> history = sorter.sort(array);
+            List<SortingStep> history = sorter.sort(array);
             for (int i : array) System.out.print(i+ " ,");
             counter();
 
             visualiser.setHistory(history);
             visualiser.setAlgorithm(algType.toString());
             // TEST visualiser.createElements(array);
-
-            for (SortingStep step : history){
-                if (step instanceof Swap){
-                    System.out.println("Swap");
-                } else if (step instanceof Marking) System.out.println("Marking");
-            }
         }
 
 
@@ -112,7 +106,7 @@ public class ProgramController {
 
     public void searchFor(int num){searchedNumber = num;}
 
-    public void changeAutoSpeed(int speed){
-        visualiser.setTimerDuration(speed);
+    public void changeCooldownDuration(double cooldownDuration){
+        visualiser.setCooldownDuration(cooldownDuration);
     }
 }
