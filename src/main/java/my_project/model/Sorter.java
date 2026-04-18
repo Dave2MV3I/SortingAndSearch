@@ -16,32 +16,29 @@ public enum Sorter {
 
                 int j = i-1;
                 while (j >= 0) {
-                    addMark(j, COMPARISON, history); // Vergleichselement markieren (Rot)
+                    addMark(j, COMPARISON, history);
 
                     if (compare(array[j], key)) {
-                        array[j+1] = array[j]; // Logisches Verschieben
+                        array[j+1] = array[j]; // Im Array Wert als j zwischengespeichert
 
-                        addSwap(j, j+1, history); // Physischer Swap für die Optik
-                        swaps++; // Statt swap(0,0), einfach den Counter direkt erhöhen
+                        addSwap(j, j+1, history); // Für Visualisierung jedoch ein Tausch
+                        swaps++;
 
-                        // WICHTIG: Das rote Element ist durch den visuellen Swap nun auf j+1 gerutscht!
+                        // Element ist durch den Swap für die Visualisierung auf j+1 gerutscht, Comparison-Markierung wieder entfernen
                         addMark(j+1, DEMARK, history);
                         j--;
+
                     } else {
-                        // Element war nicht größer, Rote Markierung wieder weg (ist noch auf j)
+                        // Element war nicht größer, Comparison-Markierung wieder entfernen
                         addMark(j, DEMARK, history);
                         break;
                     }
                 }
                 array[j+1] = key;
 
-                // Key-Element ist jetzt final an Position j+1 -> Dauer-Markierung entfernen
+                // Key-Element schließlich an Position j+1 -> Permanent-Markierung entfernen, nun sorted
                 addMark(j+1, DEMARK_PERMANENT, history);
-
-                // Alles bis zur aktuellen Position i ist nun im sortierten Bereich (Grün)
-                for (int k = 0; k <= i; k++) {
-                    addMark(k, SORTED, history);
-                }
+                addMark(j+1, SORTED, history);
             }
             return history;
         }
@@ -54,18 +51,18 @@ public enum Sorter {
 
             for(int i = 0; i < array.length-1; i++) {
                 int index = i;
-                addMark(index, PERMANENT, history); // Aktuelles Minimum Grau markieren
+                addMark(index, PERMANENT, history);
 
                 for (int j = i + 1; j < array.length; j++) {
-                    addMark(j, COMPARISON, history); // Vergleichselement Rot
+                    addMark(j, COMPARISON, history);
                     if (compare(array[index], array[j])){
                         addMark(index, DEMARK_PERMANENT, history); // Altes Minimum entmarkieren
                         index = j;
-                        addMark(index, PERMANENT, history); // Neues Minimum Grau markieren
+                        addMark(index, PERMANENT, history); // Neues Minimum markieren
                     }
-                    addMark(j, DEMARK, history); // Rote Vergleichsmarkierung weg
+                    addMark(j, DEMARK, history);
                 }
-                addMark(index, DEMARK_PERMANENT, history); // Grau weg vor dem Swap
+                addMark(index, DEMARK_PERMANENT, history);
                 swap(i, index, array, history);
                 addMark(i, SORTED, history); // Finale Position Grün
             }
@@ -95,7 +92,7 @@ public enum Sorter {
                     addMark(i+1, DEMARK, history);
                 }
                 n--;
-                addMark(n, SORTED, history); // Element ist nun ganz rechts "aufgestiegen" (Grün)
+                addMark(n, SORTED, history); // Element ist nun ganz rechts "aufgestiegen": sorted
             }
             // Rest als sortiert markieren
             for (int i = 0; i < n; i++) {
@@ -125,7 +122,7 @@ public enum Sorter {
                 int r = rechts - 1;
                 int pivot = rechts;
 
-                addMark(pivot, PERMANENT, history); // Pivot Element (Grau)
+                addMark(pivot, PERMANENT, history);
 
                 while (l <= r) {
                     while (l <= r) {
@@ -154,9 +151,9 @@ public enum Sorter {
                 if (l <= rechts) addMark(l, DEMARK, history);
                 if (r >= links) addMark(r, DEMARK, history);
 
-                addMark(pivot, DEMARK_PERMANENT, history); // Pivot Grau weg
+                addMark(pivot, DEMARK_PERMANENT, history);
                 swap(rechts, l, array, history);
-                addMark(l, SORTED, history); // Pivot ist nun an seiner finalen Stelle (Grün)
+                addMark(l, SORTED, history); // Pivot ist nun an seiner finalen Stelle "l": Sorted
 
                 quicksort(links, l-1, array, history);
                 quicksort(l+1, rechts, array, history);
@@ -260,24 +257,23 @@ public enum Sorter {
             }
 
             int pivot = max;
-            addMark(pivot, PERMANENT, history); // Pivot Grau
+            addMark(pivot, PERMANENT, history);
 
             int lastReplaceable = min;
             for (int i = min; i < max; i++){
-                addMark(i, COMPARISON, history); // Aktuelles Element rot
+                addMark(i, COMPARISON, history);
                 boolean isLessOrEqual = !compare(array[i], array[pivot]);
 
                 if (isLessOrEqual){
                     if (lastReplaceable != i) {
                         swap(lastReplaceable, i, array, history);
-                        // Nach dem Swap ist das rote Element auf lastReplaceable
                         addMark(lastReplaceable, DEMARK, history);
                     } else {
                         addMark(i, DEMARK, history);
                     }
                     lastReplaceable++;
                 } else {
-                    addMark(i, DEMARK, history); // Rot weg
+                    addMark(i, DEMARK, history);
                 }
             }
             addMark(pivot, DEMARK_PERMANENT, history);
@@ -290,10 +286,36 @@ public enum Sorter {
     },
 
     QUICK3{
+        private int[] array;
+        List<SortingStep> history = new List<>();
+
         @Override
         public List<SortingStep> sort(int[] array){
-            List<SortingStep> history = new List<>();
+            this.array = array;
+            quicksort(0, array.length - 1);
             return history;
+        }
+
+        private void quicksort(int low, int high){
+            if (low >= high) return;
+            int pivot = array[high];
+            int lt = low;
+            int i = low;
+            int gt = high;
+            while (i <= gt){
+                if (array[i] < pivot){
+                    swap(lt, i, array, history);
+                    lt++;
+                    i++;
+                } else if (array[i] > pivot){
+                    swap(i, gt, array, history);
+                    gt--;
+                } else {
+                    i++;
+                }
+            }
+            quicksort(low, lt - 1);
+            quicksort(gt + 1, high);
         }
     };
 
