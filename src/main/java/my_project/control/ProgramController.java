@@ -121,10 +121,14 @@ public class ProgramController {
         visualiser.createElements(array);
         algIsFinished = false;
         visualiser.setAnimating(false);
+        resetCounter();
     }
 
     public void counter(){
-        menu.setCounter(sorter.getSwaps(), sorter.getComps());
+        menu.setCounter(sorter.getSwaps(), sorter.getComps(), sorter.getOps());
+    }
+    public void resetCounter(){
+        menu.setCounter(0,0, 0);
     }
 
     public void changeCooldownDuration(double cooldownDuration){

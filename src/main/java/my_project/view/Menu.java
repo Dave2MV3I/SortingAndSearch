@@ -28,6 +28,8 @@ public class Menu {
     private JButton randomiseButton;
     private JSlider slider1;
     private JButton playButton;
+    private JLabel ops;
+    private JLabel all;
 
     private int compsHelp = 0;
 
@@ -54,9 +56,11 @@ public class Menu {
 
     public JPanel getMainPane() {return  mainPane;}
 
-    public void setCounter(int s, int c){
+    public void setCounter(int s, int c, int o){
         swaps.setText("Swaps: " + s);
         comps.setText("Comparisons: " + c);
+        ops.setText("Operations: " + o);
+        all.setText("All: " + (s*3 + c + o));
     }
 
 }
