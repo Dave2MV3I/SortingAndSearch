@@ -26,9 +26,9 @@ public class Menu {
     private JLabel swaps;
     private JLabel comps;
     private JButton randomiseButton;
-    private JCheckBox automaticCheckBox;
     private JSlider slider1;
     private JButton playButton;
+
     private int compsHelp = 0;
 
     public Menu(ProgramController pc) {
@@ -38,24 +38,18 @@ public class Menu {
         };
 
         for (JButton btn : buttons) {
-            btn.addActionListener(e -> System.out.println(btn.getText()));
+            //btn.addActionListener(e -> System.out.println(btn.getText()));
             AlgorithmType type = AlgorithmType.valueOf(btn.getText().toUpperCase());
-            btn.addActionListener(e -> {pc.startAlgorithm(type);});
+            btn.addActionListener(e -> {pc.setAlgorithm(type);});
         }
 
         randomiseButton.addActionListener(e -> {pc.randomise();});
-        automaticCheckBox.addActionListener(e -> {
-            if (automaticCheckBox.isSelected()) {
-                pc.autoAnim(true);
-            } else {
-                pc.autoAnim(false);
-            }
-        });
 
         slider1.addChangeListener(e -> {
-            System.out.println(slider1.getValue());
             pc.changeCooldownDuration(slider1.getValue());
         });
+
+        playButton.addActionListener(e -> {pc.startAutoAnimation();});
     }
 
     public JPanel getMainPane() {return  mainPane;}

@@ -12,6 +12,7 @@ public class Visualiser extends GraphicalObject{
     private List<SortingStep> history;
     private int historyIndex;
     boolean animating = false;
+    boolean animated = false;
     double cooldownDuration = 0.3;
     double timer = cooldownDuration;
 
@@ -35,6 +36,7 @@ public class Visualiser extends GraphicalObject{
     }
 
     public void setHistory(List<SortingStep> history){
+        animated = false;
         this.history = history;
         historyIndex = 0;
         history.toFirst();
@@ -42,6 +44,7 @@ public class Visualiser extends GraphicalObject{
 
     @Override
     public void update(double dt){
+        // Auto anim
         if (history != null && animating) {
             timer -= dt;
             if (timer < 0) {
@@ -67,23 +70,8 @@ public class Visualiser extends GraphicalObject{
         }
     }
 
-    public void handleAnimation(boolean play, boolean auto){
-        if (auto && play) animating = true;
-    }
-
     public void animateStep(boolean forward){
         SortingStep step = history.getContent();
-        if (forward) {
-            historyIndex++;
-            history.next();
-        }
-        else {
-            historyIndex--;
-            history.toFirst();
-            for (int i = 0; i < historyIndex; i++){
-                history.next();
-            }
-        }
 
         switch (step){
             case Swap _ -> {
@@ -106,7 +94,35 @@ public class Visualiser extends GraphicalObject{
                 e.setMarking(mt, forward);
             }
         }
+
+        if (forward) {
+            historyIndex++;
+            history.next();
+            if (!history.hasAccess()) {
+                animated = true;
+                animating = false;
+            }
+        }
+        else {
+            historyIndex--;
+            if (historyIndex < 0) return;
+            history.toFirst();
+            for (int i = 0; i < historyIndex; i++){
+                history.next();
+            }
+        }
     }
 
     public void setCooldownDuration(double cooldownDuration){this.cooldownDuration = cooldownDuration/100;}
+
+    public void setAnimating(boolean anim){
+        if (anim){
+            historyIndex = 0;
+            history.toFirst();
+        }
+        animating = anim;
+    }
+
+    public boolean hasAnimated(){return animated;}
+    public boolean isAnimating(){return animating;}
 }
