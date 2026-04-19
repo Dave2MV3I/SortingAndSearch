@@ -297,7 +297,7 @@ public enum Sorter {
         }
     },
 
-    QUICK3{
+    /*QUICK3{
         private int[] array;
         List<SortingStep> history = new List<>();
 
@@ -326,6 +326,75 @@ public enum Sorter {
                     i++;
                 }
             }
+            quicksort(low, lt - 1);
+            quicksort(gt + 1, high);
+        }
+    };*/
+
+    QUICK3{
+        private int[] array;
+        List<SortingStep> history;
+
+        @Override
+        public List<SortingStep> sort(int[] array){
+            this.array = array;
+            history = new List<>();
+
+            quicksort(0, array.length - 1);
+
+            for (int i = 0; i < array.length; i++) {
+                addMark(i, SORTED, history);
+            }
+            return history;
+        }
+
+        private void quicksort(int low, int high){
+            // Abbruchbedingung
+            if (low >= high) {
+                if (low == high) addMark(low, SORTED, history);
+                return;
+            }
+
+            int pivot = array[high];
+            addMark(high, PERMANENT, history); // Das gewählte Pivot markieren
+
+            int lt = low;
+            int i = low;
+            int gt = high;
+
+            while (i <= gt){
+                addMark(i, COMPARISON, history); // Aktuelles Element betrachten
+
+                if (compare(pivot, array[i])){ // array[i] < pivot
+                    addMark(i, DEMARK, history);
+
+                    if (lt != i) { // Nur swappen, wenn es nicht dasselbe Element ist
+                        swap(lt, i, array, history);
+                    }
+                    lt++;
+                    i++;
+                } else if (compare(array[i], pivot)){ // array[i] > pivot
+                    addMark(i, DEMARK, history);
+
+                    if (i != gt) {
+                        swap(i, gt, array, history);
+                    }
+
+                    gt--;
+                } else {
+                    // Element ist gleich dem Pivot
+                    addMark(i, DEMARK, history);
+                    i++;
+                }
+            }
+
+            // Die Elemente zwischen lt und gt sind nun alle exakt gleich dem Pivot.
+            // Sie haben ihre finale Position erreicht!
+            for (int k = lt; k <= gt; k++) {
+                addMark(k, DEMARK_PERMANENT, history); // Entfernt das Permanent
+                addMark(k, SORTED, history);           // Setzt den Mittelteil auf Grün
+            }
+
             quicksort(low, lt - 1);
             quicksort(gt + 1, high);
         }
