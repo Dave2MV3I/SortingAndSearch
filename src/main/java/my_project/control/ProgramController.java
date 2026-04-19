@@ -130,6 +130,4 @@ public class ProgramController {
     public void changeCooldownDuration(double cooldownDuration){
         visualiser.setCooldownDuration(cooldownDuration);
     }
-
-    // TODO 3 Mit Pfeiltasten selbst Alg machen können *
 }

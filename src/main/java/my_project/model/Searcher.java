@@ -62,8 +62,4 @@ public enum Searcher {
         if (type == COMPARISON) history.append(new Marking(index, DEMARK));
         if (type == PERMANENT) history.append(new Marking(index, DEMARK_PERMANENT));
     }
-
-    // TODO Bei searching ein neues GUI erschaffen, mögliche Zahlen angeben und Eigabefeld,
-    //  danach search() starten und danach history an Visualiser geben
-    // TODO Static Methoden von sorter nutzen um die history zu erweitern statt Codeduplizierung
 }
