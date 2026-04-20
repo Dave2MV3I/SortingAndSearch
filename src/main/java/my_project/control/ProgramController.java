@@ -134,4 +134,13 @@ public class ProgramController {
     public void changeCooldownDuration(double cooldownDuration){
         visualiser.setCooldownDuration(cooldownDuration);
     }
+
+    public void revert(){
+        array = originalArray;
+        algIsFinished = false;
+        algSelected = false;
+        visualiser.createElements(array);
+        visualiser.setAnimating(false);
+        visualiser.toStart();
+    }
 }

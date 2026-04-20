@@ -30,8 +30,7 @@ public class Menu {
     private JButton playButton;
     private JLabel ops;
     private JLabel all;
-
-    private int compsHelp = 0;
+    private JButton revertButton;
 
     public Menu(ProgramController pc) {
         JButton[] buttons = {quickButton, selectionButton, bubbleButton, insertionButton,
@@ -52,6 +51,8 @@ public class Menu {
         });
 
         playButton.addActionListener(e -> {pc.startAutoAnimation();});
+
+        revertButton.addActionListener( e -> {pc.revert();});
     }
 
     public JPanel getMainPane() {return  mainPane;}

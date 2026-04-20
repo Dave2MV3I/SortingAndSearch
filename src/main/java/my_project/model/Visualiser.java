@@ -123,6 +123,12 @@ public class Visualiser extends GraphicalObject{
         animating = anim;
     }
 
+    public void toStart(){
+        animated = false;
+        historyIndex = 0;
+        history.toFirst();
+    }
+
     public boolean hasAnimated(){return animated;}
     public boolean isAnimating(){return animating;}
 }
