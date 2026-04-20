@@ -142,5 +142,7 @@ public class ProgramController {
         visualiser.createElements(array);
         visualiser.setAnimating(false);
         visualiser.toStart();
+        sorter.resetCounter();
+        this.resetCounter();
     }
 }
