@@ -28,7 +28,6 @@ public class ProgramController {
     boolean algSelected = false;
     boolean algIsFinished = false;
 
-
     // Datenstrukturen
     private int[] array = new int[n];
     private int[] originalArray;
@@ -75,7 +74,8 @@ public class ProgramController {
         visualiser.setAnimating(true);
     }
 
-    public void setAlgorithm(AlgorithmType algType){
+    public void setAndStartAlgorithm(AlgorithmType algType){
+        Counter.reset();
         if (algIsFinished){
             System.out.println("<<<<<<<<<< PLEASE RANDOMISE FIRST >>>>>>>>>>");
         } else {
@@ -96,6 +96,7 @@ public class ProgramController {
                     Searcher searcher = Searcher.valueOf(algType.name().toUpperCase());
                     originalArray = Arrays.copyOf(array, array.length);
                     visualiser.setHistory(searcher.search(array, searchedNumber));
+                    updateCounter();
                     algIsFinished = true;
                 }
             }
@@ -105,7 +106,7 @@ public class ProgramController {
                 List<SortingStep> history = sorter.sort(array);
                 for (int i : array) System.out.print(i+ "; ");
                 System.out.println("");
-                counter();
+                updateCounter();
 
                 visualiser.setHistory(history);
                 algIsFinished = true;
@@ -121,18 +122,6 @@ public class ProgramController {
         visualiser.createElements(array);
         algIsFinished = false;
         visualiser.setAnimating(false);
-        resetCounter();
-    }
-
-    public void counter(){
-        menu.setCounter(sorter.getSwaps(), sorter.getComps(), sorter.getOps());
-    }
-    public void resetCounter(){
-        menu.setCounter(0,0, 0);
-    }
-
-    public void changeCooldownDuration(double cooldownDuration){
-        visualiser.setCooldownDuration(cooldownDuration);
     }
 
     public void revert(){
@@ -142,7 +131,14 @@ public class ProgramController {
         visualiser.createElements(array);
         visualiser.setAnimating(false);
         visualiser.toStart();
-        sorter.resetCounter();
-        this.resetCounter();
+        menu.setCounter(0,0, 0);
+    }
+
+    public void updateCounter(){
+        menu.setCounter(Counter.getSwaps(), Counter.getComps(), Counter.getOps());
+    }
+
+    public void changeCooldownDuration(double cooldownDuration){
+        visualiser.setCooldownDuration(cooldownDuration);
     }
 }

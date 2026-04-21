@@ -41,7 +41,7 @@ public class Menu {
         for (JButton btn : buttons) {
             //btn.addActionListener(e -> System.out.println(btn.getText()));
             AlgorithmType type = AlgorithmType.valueOf(btn.getText().toUpperCase());
-            btn.addActionListener(e -> {pc.setAlgorithm(type);});
+            btn.addActionListener(e -> {pc.setAndStartAlgorithm(type);});
         }
 
         randomiseButton.addActionListener(e -> {pc.randomise();});
