@@ -1,12 +1,14 @@
 package my_project.model;
-import KAGO_framework.model.GraphicalObject;
+import KAGO_framework.model.InteractiveGraphicalObject;
 import KAGO_framework.view.DrawTool;
 import my_project.Config;
 
 import java.awt.*;
+import java.awt.event.KeyEvent;
+
 import KAGO_framework.model.abitur.datenstrukturen.List;
 
-public class Visualiser extends GraphicalObject{
+public class Visualiser extends InteractiveGraphicalObject {
     private Element[] animElements;
     private String algorithm;
     private List<SortingStep> history;
@@ -131,4 +133,14 @@ public class Visualiser extends GraphicalObject{
 
     public boolean hasAnimated(){return animated;}
     public boolean isAnimating(){return animating;}
+
+    @Override
+    public void keyPressed(int key){
+        if (key == KeyEvent.VK_RIGHT){
+            animateStep(true);
+        } else if (key == KeyEvent.VK_LEFT){
+            animateStep(false);
+        }
+    }
+
 }

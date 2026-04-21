@@ -38,13 +38,14 @@ public class ProgramController {
         menu = new Menu(this);
         frame = new JFrame();
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setPreferredSize(new Dimension(500,400));
+        frame.setPreferredSize(new Dimension(500,450));
         frame.setContentPane(menu.getMainPane());
         frame.pack();
         frame.setVisible(true);
 
         visualiser = new Visualiser();
         viewController.draw(visualiser);
+        viewController.register(visualiser);
         randomise();
     }
 
